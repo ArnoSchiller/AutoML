@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 @app.get('/', response_class=HTMLResponse)
 def index():
 
-    task = job_queue.enqueue(test_job)
+    #task = job_queue.enqueue(test_job)
     n = len(job_queue.jobs)
 
     html = '<center><br /><br />'
@@ -16,6 +16,17 @@ def index():
     html += f'Total {n} Jobs in queue </center>'
     return f"{html}"
 
+@app.get('/test', response_class=HTMLResponse)
+def add_test_job():
+
+    task = job_queue.enqueue(test_job)
+    n = len(job_queue.jobs)
+
+    html = '<center><br /><br />'
+    for job in job_queue.jobs:
+        html += f'<a href="job/{job.id}">{job.id}</a><br /><br />'
+    html += f'Total {n} Jobs in queue </center>'
+    return f"{html}"
 
 @app.get('/job/<job_id>', response_class=HTMLResponse)
 def getJob(job_id):
