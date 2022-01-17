@@ -1,0 +1,24 @@
+version: '3'
+services:
+    redis:
+        image: redis:4.0.6-alpine
+        ports:
+          - "6379:6379"
+        volumes:
+            - ./redis:/redis
+
+    job-app:
+        image: job-app-image
+        container_name: job-app-container
+        build: job_app/
+        restart: always
+        ports:
+            - "8001:8001"
+
+    worker:
+        image: job-app-image:latest
+        depends_on:
+            - redis
+        command: rq worker --url redis://redis:6379
+        links:
+            - redis
